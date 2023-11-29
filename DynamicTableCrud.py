@@ -1,7 +1,6 @@
 import sqlalchemy as db
-from sqlalchemy import select
-from sqlalchemy import create_engine 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import select, Column, Integer, String
+from sqlalchemy.ext.declarative import declarative_base
 
 name = input()
 
@@ -17,12 +16,11 @@ class TableCrud:
     def add(self, column_name, column_type):
         try:
             if column_name not in self.table.columns: 
-                query = f'ALTER TABLE {self.table} ADD {column_name} integer;'
-                connection.execute(query) 
+                print('hello')
             else:
                 raise Exception("This column already exists")
         except Exception as e:
-                print(e)
+            print(e)
 
     def getItems(self):
         items = self.table.columns.keys()
@@ -36,7 +34,9 @@ class TableCrud:
                 with engine.connect() as conn:
                     result = conn.execute(stmt)
                 for row in result:
+
                     item.append(row.body)
+                print(item)
                 return item
             else:
                 raise Exception("Column does not exist")
@@ -58,12 +58,15 @@ class TableCrud:
         try:
             if column_name in self.table.columns:
                 with engine.connect() as conn:
-                    conn.execute(f'ALTER TABLE {self.table} DROP COLUMN {column_name}')
+                    conn.execute(f'SELECT * FROM {self.table.name};')
+                    #conn.execute(f'ALTER TABLE {self.table} DROP COLUMN {column_name}')
             else:
                 raise Exception("Column does not exist")
         except Exception as e:
             print(e)
 
+
 crud_obj = TableCrud(table_engine)
-crud_obj.add("hello", String)
+print(crud_obj.getOneItem())
+#crud_obj.add("don't worry",String)
 print(crud_obj.getItems())

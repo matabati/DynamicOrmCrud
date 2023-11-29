@@ -21,4 +21,5 @@ with engine.connect() as conn:
 
 #connection = engine.connect() 
 #query = text(f'ALTER TABLE {table_name} ADD colorrring VARCHAR(255);')
-#connection.execute(query) 
+#connection.execute(query)
+#  
