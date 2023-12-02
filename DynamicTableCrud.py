@@ -1,13 +1,15 @@
 import sqlalchemy as db
-from sqlalchemy import select, Column, Integer, String
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-name = input()
+name = input("what is your table name?")
 
-engine = db.create_engine('postgresql+psycopg2://postgres:atpq238rz@127.0.0.1:5433/postgres')
+engine = db.create_engine('')
 connection = engine.connect() 
 metadata = db.MetaData()
 table_engine = db.Table(name, metadata, autoload_with=engine)
+
+Session = sessionmaker(bind=engine)
+session = Session()
 
 class TableCrud:
     def __init__(self, table):
@@ -16,7 +18,9 @@ class TableCrud:
     def add(self, column_name, column_type):
         try:
             if column_name not in self.table.columns: 
-                print('hello')
+                query = f'ALTER TABLE {self.table} ADD {column_name} {column_type};'
+                connection.execute(query) 
+                session.commit()
             else:
                 raise Exception("This column already exists")
         except Exception as e:
@@ -28,16 +32,9 @@ class TableCrud:
 
     def getOneItem(self, column_name):
         try:
-            if column_name in self.table.columns: 
-                item = []
-                stmt = select(self.table.columns.column_name)
-                with engine.connect() as conn:
-                    result = conn.execute(stmt)
-                for row in result:
-
-                    item.append(row.body)
-                print(item)
-                return item
+            if column_name in self.table.columns:
+                items = session.query(self.table.c[column_name]).all()
+                return items
             else:
                 raise Exception("Column does not exist")
         except Exception as e:
@@ -46,9 +43,12 @@ class TableCrud:
     def update(self, column_name, new_name, new_type):
         try:
             if column_name in self.table.columns:
-                with engine.connect() as conn:
-                    conn.execute(f'ALTER TABLE {self.table} RENAME COLUMN {column_name} TO {new_name}')
-                    conn.execute(f'ALTER TABLE {self.table} ALTER COLUMN {new_name} TYPE {new_type}')
+                query = f'ALTER TABLE {self.table} RENAME COLUMN {column_name} TO {new_name};'
+                connection.execute(query) 
+                query = f'ALTER TABLE {self.table} ALTER COLUMN {new_name} TYPE {new_type};'
+                connection.execute(query)
+                session.commit()
+
             else:
                 raise Exception("Column does not exist")
         except Exception as e:
@@ -57,9 +57,10 @@ class TableCrud:
     def delete(self, column_name):
         try:
             if column_name in self.table.columns:
-                with engine.connect() as conn:
-                    conn.execute(f'SELECT * FROM {self.table.name};')
-                    #conn.execute(f'ALTER TABLE {self.table} DROP COLUMN {column_name}')
+                query = f'ALTER TABLE {self.table} DROP COLUMN {column_name};'
+                connection.execute(query) 
+                session.commit()
+
             else:
                 raise Exception("Column does not exist")
         except Exception as e:
@@ -67,6 +68,3 @@ class TableCrud:
 
 
 crud_obj = TableCrud(table_engine)
-print(crud_obj.getOneItem())
-#crud_obj.add("don't worry",String)
-print(crud_obj.getItems())
