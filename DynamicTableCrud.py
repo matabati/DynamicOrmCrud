@@ -15,7 +15,7 @@ class TableCrud:
     def __init__(self, table):
         self.table = table
 
-    def add(self, column_name, column_type):
+    def addItem(self, column_name, column_type):
         try:
             if column_name not in self.table.columns: 
                 query = f'ALTER TABLE {self.table} ADD {column_name} {column_type};'
@@ -40,7 +40,7 @@ class TableCrud:
         except Exception as e:
                 print(e)
 
-    def update(self, column_name, new_name, new_type):
+    def updateItem(self, column_name, new_name, new_type):
         try:
             if column_name in self.table.columns:
                 query = f'ALTER TABLE {self.table} RENAME COLUMN {column_name} TO {new_name};'
@@ -48,13 +48,12 @@ class TableCrud:
                 query = f'ALTER TABLE {self.table} ALTER COLUMN {new_name} TYPE {new_type};'
                 connection.execute(query)
                 session.commit()
-
             else:
                 raise Exception("Column does not exist")
         except Exception as e:
             print(e)
 
-    def delete(self, column_name):
+    def deleteItem(self, column_name):
         try:
             if column_name in self.table.columns:
                 query = f'ALTER TABLE {self.table} DROP COLUMN {column_name};'

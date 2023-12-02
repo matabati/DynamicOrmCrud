@@ -17,7 +17,7 @@ class Data_crud:
         self.session = session
         self.table = table
 
-    def add(self, data):
+    def addItem(self, data):
         self.session.add(data)
         self.session.commit()
 
@@ -29,7 +29,7 @@ class Data_crud:
         item = self.session.query(self.table).filter_by(id= id).first()
         return item
 
-    def update(self, id, new_data):
+    def updateItem(self, id, new_data):
         try:
             self.session.begin()
             item = self.getOneItem(id)
@@ -40,7 +40,7 @@ class Data_crud:
             self.session.rollback()
             print(f"An error occurred: {e}")
 
-    def delete(self, id):
+    def deleteItem(self, id):
         order = self.session.query(self.table).filter_by(id= id).first()
         if order:
             self.session.delete(order)
