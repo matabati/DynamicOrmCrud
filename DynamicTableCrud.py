@@ -15,7 +15,7 @@ class TableCrud:
     def __init__(self, table):
         self.table = table
 
-    def addItem(self, column_name, column_type):
+    def createItem(self, column_name, column_type):
         try:
             if column_name not in self.table.columns: 
                 query = f'ALTER TABLE {self.table} ADD {column_name} {column_type};'
