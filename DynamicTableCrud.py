@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 name = input("what is your table name?")
 
-engine = db.create_engine('')
+engine = db.create_engine('postgresql+psycopg2://postgres:atpq238rz@127.0.0.1:5433/postgres')
 connection = engine.connect() 
 metadata = db.MetaData()
 table_engine = db.Table(name, metadata, autoload_with=engine)
@@ -45,7 +45,7 @@ class TableCrud:
             if column_name in self.table.columns:
                 query = f'ALTER TABLE {self.table} RENAME COLUMN {column_name} TO {new_name};'
                 connection.execute(query) 
-                query = f'ALTER TABLE {self.table} ALTER COLUMN {new_name} TYPE {new_type};'
+                query = f'ALTER TABLE {self.table} ALTER COLUMN {new_name} TYPE {new_type} USING {new_name}::{new_type};'
                 connection.execute(query)
                 session.commit()
             else:
