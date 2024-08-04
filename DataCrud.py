@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 name = input("what is your table name? ")
 
-engine = db.create_engine('postgresql+psycopg2://postgres:atpq238rz@127.0.0.1:5433/postgres')
+engine = db.create_engine('postgresql+psycopg2://')
 connection = engine.connect() 
 metadata = db.MetaData()
 table_engine = db.Table(name, metadata, autoload_with=engine)
