@@ -6,7 +6,7 @@ from sqlalchemy import text
 
 name = input()
 
-engine = db.create_engine('postgresql+psycopg2://postgres:atpq238rz@127.0.0.1:5433/postgres')
+engine = db.create_engine('postgresql+psycopg2://')
 metadata = db.MetaData()
 table_name = db.Table(name, metadata, autoload_with=engine)
 
